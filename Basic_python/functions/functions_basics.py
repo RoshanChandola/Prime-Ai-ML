@@ -23,3 +23,4 @@ def greet_user(name="Guest"):
     print("Hello,", name)   
 greet_user()  # Output: Hello, Guest
 greet_user("Alice")  # Output: Hello, Alice
+print(type(add_numbers("roshan","chandola")))
