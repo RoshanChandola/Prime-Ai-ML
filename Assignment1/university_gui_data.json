@@ -1,0 +1,49 @@
+{
+    "university_name": "Uttaranchal University",
+    "address": "Dehradun, Uttarakhand",
+    "departments": [
+        {
+            "dept_name": "USCS",
+            "faculty": [
+                {
+                    "name": "Roshan Chandola",
+                    "id_no": "1",
+                    "position": "Faculty",
+                    "salary": 3000000000000,
+                    "subject": "AI",
+                    "courses": []
+                }
+            ],
+            "employees": [],
+            "courses": [
+                {
+                    "course_name": "MCA",
+                    "course_code": "1"
+                }
+            ],
+            "students": [
+                {
+                    "name": "Roshan Chandola",
+                    "id_no": "1",
+                    "course": "MCA",
+                    "fees": 3200000
+                }
+            ]
+        },
+        {
+            "dept_name": "UIM",
+            "faculty": [],
+            "employees": [],
+            "courses": [],
+            "students": []
+        },
+        {
+            "dept_name": "UIT",
+            "faculty": [],
+            "employees": [],
+            "courses": [],
+            "students": []
+        }
+    ],
+    "admin_staff": []
+}
