@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ensemble Learning — Complete Guide</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+:root {
+  --paper: #F6F4EE;
+  --paper-deep: #EFEBE0;
+  --ink: #1C1B19;
+  --ink-soft: #5B5751;
+  --ink-faint: #8A857C;
+  --forest: #1F4B3F;
+  --forest-soft: #E6EDE7;
+  --amber: #B97A22;
+  --amber-soft: #F4E9D5;
+  --slate: #314A60;
+  --slate-soft: #E6ECF1;
+  --rose: #7B3553;
+  --rose-soft: #F2E6EC;
+  --teal: #1A5C5C;
+  --teal-soft: #E1EEEE;
+  --line: #DCD5C4;
+  --line-strong: #C9C0AA;
+  --display: "Fraunces", Georgia, serif;
+  --body: "Source Serif 4", Georgia, serif;
+  --mono: "JetBrains Mono", "SF Mono", Consolas, monospace;
+  --maxw: 800px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 18px;
+  line-height: 1.68;
+  -webkit-font-smoothing: antialiased;
+}
+
+img, svg { max-width: 100%; display: block; }
+
+.wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+/* ---- HERO ---- */
+.hero {
+  background: radial-gradient(ellipse 1000px 520px at 50% -8%, var(--forest-soft) 0%, transparent 65%), var(--paper);
+  border-bottom: 1px solid var(--line);
+  padding: 80px 0 52px;
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--forest);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.eyebrow::before {
+  content: "";
+  width: 22px; height: 1px;
+  background: var(--forest);
+}
+
+h1.title {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 54px;
+  line-height: 1.04;
+  letter-spacing: -.01em;
+  margin: 16px 0 14px;
+  color: var(--ink);
+}
+h1.title em {
+  font-style: italic;
+  font-weight: 500;
+  color: var(--forest);
+}
+
+.lede {
+  font-size: 19.5px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  max-width: 620px;
+  margin: 0 0 34px;
+}
+
+/* ---- TOC ---- */
+nav.toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 28px;
+}
+nav.toc a {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .03em;
+  color: var(--ink);
+  text-decoration: none;
+  background: #fff;
+  border: 1px solid var(--line-strong);
+  padding: 6px 13px;
+  border-radius: 999px;
+  transition: border-color .15s, background .15s;
+}
+nav.toc a:hover { border-color: var(--forest); background: var(--forest-soft); }
+
+/* ---- SECTION ---- */
+main { padding: 6px 0 20px; }
+section.block {
+  padding: 60px 0;
+  border-bottom: 1px solid var(--line);
+}
+section.block:last-of-type { border-bottom: none; }
+
+h2.h-section {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 34px;
+  letter-spacing: -.005em;
+  margin: 6px 0 18px;
+  color: var(--ink);
+}
+
+h3.h-sub {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 21px;
+  margin: 36px 0 12px;
+  color: var(--ink);
+}
+
+h4.h-mini {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 17px;
+  margin: 22px 0 8px;
+  color: var(--ink);
+}
+
+p { margin: 0 0 16px; color: var(--ink); }
+p.muted { color: var(--ink-soft); }
+
+/* ---- TAGS ---- */
+.method-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 5px 11px;
+  border-radius: 5px;
+  margin-bottom: 14px;
+}
+.tag-forest { background: var(--forest-soft); color: var(--forest); }
+.tag-amber  { background: var(--amber-soft);  color: var(--amber);  }
+.tag-slate  { background: var(--slate-soft);  color: var(--slate);  }
+.tag-rose   { background: var(--rose-soft);   color: var(--rose);   }
+.tag-teal   { background: var(--teal-soft);   color: var(--teal);   }
+
+/* ---- DIAGRAM CARD ---- */
+.diagram-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 22px 16px 14px;
+  margin: 22px 0 28px;
+  overflow: hidden;
+}
+.diagram-caption {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--ink-faint);
+  text-align: center;
+  margin-top: 8px;
+}
+
+/* ---- ALGO STEPS ---- */
+ol.algo {
+  list-style: none;
+  margin: 16px 0 26px;
+  padding: 0;
+  counter-reset: algostep;
+  border-left: 2px solid var(--line);
+}
+ol.algo > li {
+  counter-increment: algostep;
+  position: relative;
+  padding: 2px 0 18px 32px;
+}
+ol.algo > li::before {
+  content: counter(algostep);
+  position: absolute;
+  left: -13px;
+  top: 2px;
+  width: 24px; height: 24px;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 50%;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+ol.algo ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+  color: var(--ink-soft);
+}
+ol.algo ul li { margin-bottom: 8px; }
+
+/* ---- MATH BLOCKS ---- */
+.math-block {
+  background: var(--paper-deep);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin: 16px 0 8px;
+  overflow-x: auto;
+}
+.math-block.center { text-align: center; }
+
+/* ---- LEGEND ---- */
+.legend {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--forest);
+  border-radius: 0 8px 8px 0;
+  padding: 16px 20px;
+  margin: 6px 0 28px;
+}
+.legend.amber { border-left-color: var(--amber); }
+.legend.slate { border-left-color: var(--slate); }
+.legend.rose  { border-left-color: var(--rose);  }
+.legend.teal  { border-left-color: var(--teal);  }
+.legend-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--forest);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.legend.amber .legend-title { color: var(--amber); }
+.legend.slate .legend-title { color: var(--slate); }
+.legend.rose  .legend-title { color: var(--rose);  }
+.legend.teal  .legend-title { color: var(--teal);  }
+.legend dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 7px 18px;
+}
+.legend dt {
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--ink);
+  white-space: nowrap;
+  align-self: start;
+  padding-top: 2px;
+}
+.legend dd {
+  margin: 0;
+  font-size: 15.5px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+/* ---- CALLOUT ---- */
+.callout {
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 22px 0;
+  font-size: 16px;
+  line-height: 1.6;
+}
+.callout-amber { background: var(--amber-soft); border: 1px solid #E3CDA0; color: #5C4419; }
+.callout-amber b { color: #4A370F; }
+.callout-forest { background: var(--forest-soft); border: 1px solid #B5CCB8; color: #1A3D32; }
+.callout-forest b { color: #122B24; }
+.callout-slate { background: var(--slate-soft); border: 1px solid #B5C5D4; color: #253848; }
+.callout-slate b { color: #18273A; }
+.callout-rose { background: var(--rose-soft); border: 1px solid #D4B0C0; color: #5C2840; }
+.callout-rose b { color: #3F1A2C; }
+
+/* ---- TABLE ---- */
+.table-wrap { overflow-x: auto; margin: 18px 0 28px; }
+table.compare {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  min-width: 680px;
+}
+table.compare th, table.compare td {
+  border: 1px solid var(--line);
+  padding: 12px 14px;
+  text-align: left;
+  vertical-align: top;
+}
+table.compare thead th {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+table.compare tbody tr:nth-child(odd) { background: #fff; }
+table.compare tbody tr:nth-child(even) { background: var(--paper-deep); }
+table.compare td.label { font-weight: 600; font-family: var(--display); font-size: 16px; }
+
+/* ---- HERO PULSE ANIMATION ---- */
+@media (prefers-reduced-motion: reduce) {
+  .pulse { animation: none !important; }
+}
+.pulse { animation: travel 3.2s linear infinite; }
+.pulse.d2 { animation-delay: .64s; }
+.pulse.d3 { animation-delay: 1.28s; }
+.pulse.d4 { animation-delay: 1.92s; }
+.pulse.d5 { animation-delay: 2.56s; }
+@keyframes travel {
+  0%   { offset-distance: 0%;   opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { offset-distance: 100%; opacity: 0; }
+}
+
+/* ---- FOOTER ---- */
+footer {
+  padding: 40px 0 70px;
+  color: var(--ink-faint);
+  font-size: 13px;
+  font-family: var(--mono);
+  border-top: 1px solid var(--line);
+}
+
+.katex { font-size: 1.04em; }
+.katex-display { margin: 0 !important; }
+
+@media (max-width: 600px) {
+  h1.title { font-size: 36px; }
+  h2.h-section { font-size: 27px; }
+  .lede { font-size: 17.5px; }
+  body { font-size: 16.5px; }
+  .legend dl { grid-template-columns: 1fr; }
+  .legend dt { margin-top: 6px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========= HERO ========= -->
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">A complete practitioner's guide</div>
+    <h1 class="title">Ensemble<br><em>Learning</em></h1>
+    <p class="lede">Every major ensemble method — Bagging, Random Forests, AdaBoost, Gradient Boosting, XGBoost, LightGBM, Stacking, and Voting — with full mathematical derivations, algorithmic steps, and every symbol explained.</p>
+
+    <div class="diagram-card" style="margin-top:8px;">
+      <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Weak learners combining into a strong learner">
+        <defs>
+          <path id="pA" d="M 85 30 C 220 30, 260 100, 340 100" fill="none"/>
+          <path id="pB" d="M 85 70 C 220 70, 260 100, 340 100" fill="none"/>
+          <path id="pC" d="M 85 100 C 220 100, 260 100, 340 100" fill="none"/>
+          <path id="pD" d="M 85 130 C 220 130, 260 100, 340 100" fill="none"/>
+          <path id="pE" d="M 85 170 C 220 170, 260 100, 340 100" fill="none"/>
+          <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10z" fill="#1C1B19"/>
+          </marker>
+        </defs>
+        <use href="#pA" stroke="#C9C0AA" stroke-width="1.3"/>
+        <use href="#pB" stroke="#C9C0AA" stroke-width="1.3"/>
+        <use href="#pC" stroke="#C9C0AA" stroke-width="1.3"/>
+        <use href="#pD" stroke="#C9C0AA" stroke-width="1.3"/>
+        <use href="#pE" stroke="#C9C0AA" stroke-width="1.3"/>
+        <circle r="4" fill="#B97A22" class="pulse"><animateMotion dur="3.2s" repeatCount="indefinite"><mpath href="#pA"/></animateMotion></circle>
+        <circle r="4" fill="#1F4B3F" class="pulse d2"><animateMotion dur="3.2s" repeatCount="indefinite"><mpath href="#pB"/></animateMotion></circle>
+        <circle r="4" fill="#314A60" class="pulse d3"><animateMotion dur="3.2s" repeatCount="indefinite"><mpath href="#pC"/></animateMotion></circle>
+        <circle r="4" fill="#7B3553" class="pulse d4"><animateMotion dur="3.2s" repeatCount="indefinite"><mpath href="#pD"/></animateMotion></circle>
+        <circle r="4" fill="#1A5C5C" class="pulse d5"><animateMotion dur="3.2s" repeatCount="indefinite"><mpath href="#pE"/></animateMotion></circle>
+        <g font-family="JetBrains Mono" font-size="11">
+          <circle cx="85" cy="30"  r="22" fill="#fff" stroke="#314A60" stroke-width="1.5"/>
+          <text x="85" y="34"  text-anchor="middle" fill="#314A60">h₁</text>
+          <circle cx="85" cy="70"  r="22" fill="#fff" stroke="#314A60" stroke-width="1.5"/>
+          <text x="85" y="74"  text-anchor="middle" fill="#314A60">h₂</text>
+          <circle cx="85" cy="100" r="22" fill="#fff" stroke="#314A60" stroke-width="1.5"/>
+          <text x="85" y="104" text-anchor="middle" fill="#314A60">h₃</text>
+          <circle cx="85" cy="130" r="22" fill="#fff" stroke="#314A60" stroke-width="1.5"/>
+          <text x="85" y="134" text-anchor="middle" fill="#314A60">h₄</text>
+          <circle cx="85" cy="170" r="22" fill="#fff" stroke="#314A60" stroke-width="1.5"/>
+          <text x="85" y="174" text-anchor="middle" fill="#314A60">h₅</text>
+        </g>
+        <circle cx="370" cy="100" r="44" fill="#1F4B3F"/>
+        <text x="370" y="105" text-anchor="middle" fill="#F6F4EE" font-family="JetBrains Mono" font-size="14" font-weight="600">H(x)</text>
+        <line x1="414" x2="476" y1="100" y2="100" stroke="#1C1B19" stroke-width="1.8" marker-end="url(#arr)"/>
+        <text x="560" y="95"  text-anchor="middle" font-family="Source Serif 4" font-size="14" fill="#1C1B19">final</text>
+        <text x="560" y="113" text-anchor="middle" font-family="Source Serif 4" font-size="14" fill="#1C1B19">prediction</text>
+      </svg>
+      <div class="diagram-caption">weak learners h₁…h₅ are aggregated into a single strong ensemble H(x)</div>
+    </div>
+
+    <nav class="toc">
+      <a href="#why">Why it works</a>
+      <a href="#bagging">Bagging</a>
+      <a href="#rf">Random Forests</a>
+      <a href="#adaboost">AdaBoost</a>
+      <a href="#gb">Gradient Boosting</a>
+      <a href="#xgboost">XGBoost</a>
+      <a href="#lgbm">LightGBM</a>
+      <a href="#stacking">Stacking</a>
+      <a href="#voting">Voting</a>
+      <a href="#compare">Comparison</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+
+<!-- ===== 1. WHY ENSEMBLES WORK ===== -->
+<section class="block" id="why">
+  <div class="method-tag tag-slate">Foundation</div>
+  <h2 class="h-section">Why combining models helps</h2>
+  <p>Any single model's total prediction error decomposes into three independent terms. For a learned function $\hat{f}(x)$ trying to predict a true value $y$:</p>
+
+  <div class="math-block center">
+    $$\underbrace{E\!\left[(y - \hat{f}(x))^2\right]}_{\text{Total expected error}} = \underbrace{\text{Bias}(\hat{f}(x))^2}_{\text{systematic error}} + \underbrace{\text{Var}(\hat{f}(x))}_{\text{sensitivity to training data}} + \underbrace{\sigma^2}_{\text{irreducible noise}}$$
+  </div>
+
+  <div class="legend slate">
+    <div class="legend-title">Notation</div>
+    <dl>
+      <dt>$y$</dt><dd>true target value for input $x$</dd>
+      <dt>$\hat{f}(x)$</dt><dd>model's predicted value for input $x$</dd>
+      <dt>$E[\cdot]$</dt><dd>expectation, i.e., the average over all possible training sets of size $n$</dd>
+      <dt>$\text{Bias}(\hat{f}(x))$</dt><dd>$E[\hat{f}(x)] - f(x)$: how far the average prediction drifts from the truth</dd>
+      <dt>$\text{Var}(\hat{f}(x))$</dt><dd>$E\!\left[(\hat{f}(x) - E[\hat{f}(x)])^2\right]$: how widely the prediction swings across training sets</dd>
+      <dt>$\sigma^2$</dt><dd>variance of $y$ around $f(x)$ — the noise floor no algorithm can beat</dd>
+    </dl>
+  </div>
+
+  <h3 class="h-sub">The variance reduction formula</h3>
+  <p>If we average $B$ independent identically-distributed estimators, each with variance $\sigma^2$ and pairwise correlation $\rho$ between their errors, the averaged estimator has variance:</p>
+
+  <div class="math-block center">
+    $$\text{Var}\!\left(\frac{1}{B}\sum_{b=1}^{B}Z_b\right) = \rho\,\sigma^2 + \frac{1 - \rho}{B}\,\sigma^2$$
+  </div>
+
+  <div class="legend slate">
+    <div class="legend-title">Notation</div>
+    <dl>
+      <dt>$B$</dt><dd>number of models being averaged</dd>
+      <dt>$Z_b$</dt><dd>prediction from the $b$-th model</dd>
+      <dt>$\rho$</dt><dd>average Pearson correlation between errors of any pair of models</dd>
+      <dt>$\sigma^2$</dt><dd>variance of a single model's error</dd>
+    </dl>
+  </div>
+
+  <p class="muted">As $B \to \infty$, the second term vanishes, leaving $\rho\,\sigma^2$. This is why ensemble design is ultimately about keeping $\rho$ small: every method below is a distinct strategy for creating diverse, decorrelated models without sacrificing individual accuracy.</p>
+</section>
+
+<!-- ===== 2. BAGGING ===== -->
+<section class="block" id="bagging">
+  <div class="method-tag tag-forest">Method · Parallel · Variance reduction</div>
+  <h2 class="h-section">Bagging — Bootstrap Aggregating</h2>
+  <p>Breiman (1996) proposed training many identical model architectures on different bootstrap resamples of the data, then averaging their predictions. Because no model ever sees the exact same data, their errors are partially decorrelated, lowering $\rho$.</p>
+
+  <div class="diagram-card">
+    <svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10z" fill="#1C1B19"/>
+        </marker>
+      </defs>
+      <!-- Training set -->
+      <rect x="275" y="6" width="150" height="36" rx="6" fill="#314A60"/>
+      <text x="350" y="29" text-anchor="middle" fill="#F6F4EE" font-family="JetBrains Mono" font-size="12">D  (n samples)</text>
+      <!-- fan-out lines -->
+      <line x1="306" y1="42" x2="106" y2="82" stroke="#C9C0AA" stroke-width="1.3"/>
+      <line x1="326" y1="42" x2="256" y2="82" stroke="#C9C0AA" stroke-width="1.3"/>
+      <line x1="374" y1="42" x2="444" y2="82" stroke="#C9C0AA" stroke-width="1.3"/>
+      <line x1="394" y1="42" x2="594" y2="82" stroke="#C9C0AA" stroke-width="1.3"/>
+      <!-- Bootstrap samples -->
+      <rect x="56"  y="82" width="100" height="28" rx="5" fill="#fff" stroke="#1F4B3F" stroke-width="1.4"/>
+      <text x="106" y="101" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#1F4B3F">D₁*</text>
+      <rect x="206" y="82" width="100" height="28" rx="5" fill="#fff" stroke="#1F4B3F" stroke-width="1.4"/>
+      <text x="256" y="101" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#1F4B3F">D₂*</text>
+      <text x="355" y="100" text-anchor="middle" font-family="JetBrains Mono" font-size="13" fill="#8A857C">…</text>
+      <rect x="394" y="82" width="100" height="28" rx="5" fill="#fff" stroke="#1F4B3F" stroke-width="1.4"/>
+      <text x="444" y="101" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#1F4B3F">D_{B-1}*</text>
+      <rect x="544" y="82" width="100" height="28" rx="5" fill="#fff" stroke="#1F4B3F" stroke-width="1.4"/>
+      <text x="594" y="101" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#1F4B3F">D_B*</text>
+      <!-- train arrows -->
+      <line x1="106" y1="110" x2="106" y2="136" stroke="#C9C0AA" stroke-width="1.3"/>
+      <line x1="256" y1="110" x2="256" y2="136" stroke="#C9C0AA" stroke-width="1.3"/>
+      <line x1="444" y1="110" x2="444" y2="136" stroke="#C9C0AA" stroke-width="1.3"/>
+      <line x1="594" y1="110" x2="594" y2="136" stroke="#C9C0AA" stroke-width="1.3"/>
+      <!-- Models -->
+      <rect x="68"  y="136" width="76" height="28" rx="5" fill="#1F4B3F"/>
+      <text x="106" y="154" text-anchor="middle" fill="#fff" font-family="JetBrains Mono" font-size="11">f̂⁽¹⁾</text>
+      <rect x="218" y="136" width="76" height="28" rx="5" fill="#1F4B3F"/>
+      <text x="256" y="154" text-anchor="middle" fill="#fff" font-family="JetBrains Mono" font-size="11">f̂⁽²⁾</text>
+      <rect x="406" y="136" width="76" height="28" rx="5" fill="#1F4B3F"/>
+      <text x="444" y="154" text-anchor="middle" fill="#fff" font-family="JetBrains Mono" font-size="11">f̂⁽ᴮ⁻¹⁾</text>
+      <rect x="556" y="136" width="76" height="28" rx="5" fill="#1F4B3F"/>
+      <text x="594" y="154" text-anchor="middle" fill="#fff" font-family="JetBrains Mono" font-size="11">f̂⁽ᴮ⁾</text>
+      <!-- aggregate -->
+      <line x1="106" y1="164" x2="320" y2="192" stroke="#C9C0AA" stroke-width="1.2"/>
+      <line x1="256" y1="164" x2="332" y2="192" stroke="#C9C0AA" stroke-width="1.2"/>
+      <line x1="444" y1="164" x2="368" y2="192" stroke="#C9C0AA" stroke-width="1.2"/>
+      <line x1="594" y1="164" x2="382" y2="192" stroke="#C9C0AA" stroke-width="1.2"/>
+      <rect x="278" y="192" width="144" height="28" rx="6" fill="#B97A22"/>
+      <text x="350" y="210" text-anchor="middle" fill="#fff" font-family="JetBrains Mono" font-size="11.5">average / vote</text>
+    </svg>
+    <div class="diagram-caption">each bootstrap sample D_b* resamples n rows with replacement; ~63.2% unique rows per sample</div>
+  </div>
+
+  <h3 class="h-sub">Algorithm</h3>
+  <ol class="algo">
+    <li>For each iteration $b = 1, \dots, B$:
+      <ul>
+        <li>Draw a bootstrap sample $D_b^*$ of size $n$ from the training set $D = \{(x_i, y_i)\}_{i=1}^{n}$ by sampling with replacement.</li>
+        <li>Train base learner $\hat{f}^{(b)}$ using only $D_b^*$.</li>
+      </ul>
+    </li>
+    <li>Aggregate predictions:
+      <ul>
+        <li><strong>Regression:</strong> $\hat{f}_{\text{bag}}(x) = \dfrac{1}{B}\displaystyle\sum_{b=1}^{B}\hat{f}^{(b)}(x)$</li>
+        <li><strong>Classification:</strong> $\hat{f}_{\text{bag}}(x) = \arg\max_{k}\displaystyle\sum_{b=1}^{B}\mathbb{1}(\hat{f}^{(b)}(x) = k)$</li>
+      </ul>
+    </li>
+  </ol>
+
+  <div class="legend">
+    <div class="legend-title">Notation</div>
+    <dl>
+      <dt>$D$</dt><dd>original training dataset of $n$ labeled pairs $(x_i, y_i)$</dd>
+      <dt>$D_b^*$</dt><dd>$b$-th bootstrap resample: $n$ rows drawn with replacement from $D$ (each row has probability $1/n$ of being chosen each draw)</dd>
+      <dt>$n$</dt><dd>number of training samples</dd>
+      <dt>$B$</dt><dd>total number of base models trained; typically 100–500 trees for tree-based bagging</dd>
+      <dt>$\hat{f}^{(b)}$</dt><dd>the model trained exclusively on $D_b^*$</dd>
+      <dt>$\hat{f}_{\text{bag}}$</dt><dd>the final bagged ensemble prediction</dd>
+      <dt>$k$</dt><dd>a candidate class label in a classification problem</dd>
+      <dt>$\mathbb{1}(\cdot)$</dt><dd>indicator function: equals 1 when its argument is true, 0 otherwise</dd>
+      <dt>$\arg\max_k$</dt><dd>"the value of $k$ that maximises the expression that follows"</dd>
+    </dl>
+  </div>
+
+  <h3 class="h-sub">Out-of-bag (OOB) estimation</h3>
+  <p>Because each $D_b^*$ is drawn with replacement, each sample has a $(1 - 1/n)^n \xrightarrow{n\to\infty} e^{-1} \approx 0.368$ probability of never appearing in $D_b^*$. Those excluded rows form the <strong>out-of-bag set</strong> for model $b$. The OOB error estimate is:</p>
+
+  <div class="math-block center">
+    $$\hat{\varepsilon}_{\text{OOB}} = \frac{1}{n}\sum_{i=1}^{n} L\!\left(y_i,\; \frac{1}{|\mathcal{B}_i|}\sum_{b \in \mathcal{B}_i}\hat{f}^{(b)}(x_i)\right)$$
+  </div>
+
+  <div class="legend">
+    <div class="legend-title">Notation</div>
+    <dl>
+      <dt>$\mathcal{B}_i$</dt><dd>set of all bootstrap indices $b$ for which sample $i$ was <em>not</em> in $D_b^*$</dd>
+      <dt>$|\mathcal{B}_i|$</dt><dd>size of that set — typically around $0.368 \times B$</dd>
+      <dt>$L(y_i, \cdot)$</dt><dd>a loss function (e.g., squared error for regression, 0-1 loss for classification)</dd>
+      <dt>$\hat{\varepsilon}_{\text{OOB}}$</dt><dd>out-of-bag error: a nearly unbiased estimate of generalisation error, requiring no separate validation set</dd>
+    </dl>
+  </div>
+</section>
+
+<!-- ===== 3. RANDOM FORESTS ===== -->
+<section class="block" id="rf">
+  <div class="method-tag tag-forest">Method · Parallel · Bagging + feature randomness</div>
+  <h2 class="h-section">Random Forests</h2>
+  <p>Breiman (2001) added a second decorrelation mechanism on top of bootstrapping: at each node split, only a random subset of features is considered as candidates. This breaks the tendency of all trees to rely on the same few strong predictors — the main source of high inter-tree correlation in plain bagging of decision trees.</p>
+
+  <h3 class="h-sub">Algorithm</h3>
+  <ol class="algo">
+    <li>For $b = 1, \dots, B$:
+      <ul>
+        <li>Draw bootstrap sample $D_b^*$ from $D$.</li>
+        <li>Grow a decision tree $T_b$ on $D_b^*$ using the following split rule: at each node, before searching for the best split, draw a fresh random subset $\mathcal{F} \subset \{1, \dots, p\}$ of $m$ features and restrict the search to only those $m$ features.</li>
+        <li>Grow the tree fully (no pruning) or until a minimum leaf size is reached.</li>
+      </ul>
+    </li>
+    <li>Aggregate the $B$ trees as in bagging.</li>
+  </ol>
+
+  <h3 class="h-sub">Choosing $m$</h3>
+  <div class="math-block center">
+    $$m \approx \begin{cases} \lfloor\sqrt{p}\rfloor & \text{classification} \\ \lfloor p/3 \rfloor & \text{regression} \end{cases}$$
+  </div>
+
+  <div class="legend">
+    <div class="legend-title">Notation</div>
+    <dl>
+      <dt>$p$</dt><dd>total number of input features available</dd>
+      <dt>$m$</dt><dd>number of features randomly selected as candidates at each node split; the key hyperparameter</dd>
+      <dt>$\mathcal{F}$</dt><dd>the randomly drawn subset of $m$ feature indices at a given node; re-drawn independently at every node</dd>
+      <dt>$T_b$</dt><dd>the $b$-th fully-grown decision tree, whose splits use only features in $\mathcal{F}$ at each node</dd>
+    </dl>
+  </div>
+
+  <h3 class="h-sub">Feature importance: Mean Decrease in Impurity (MDI)</h3>
+  <p>For each feature $j$, sum the weighted impurity reductions across all nodes in all trees where feature $j$ was used to split:</p>
+  <div class="math-block center">
+    $$\text{Importance}(j) = \frac{1}{B}\sum_{b=1}^{B}\sum_{\substack{t \in T_b \\ \text{split on } j}} p_t \cdot \Delta I(t)$$
+  </div>
+  <div class="legend">
+    <div class="legend-title">Notation</div>
+    <dl>
+      <dt>$t$</dt><dd>a node in tree $T_b$ that was split using feature $j$</dd>
+      <dt>$p_t$</dt><dd>fraction of training samples reaching node $t$ — the weight of that node's contribution</dd>
+      <dt>$\Delta I(t)$</dt><dd>reduction in node impurity (Gini or entropy for classification, MSE for regression) achieved by splitting at node $t$</dd>
+    </dl>
+  </div>
+
+  <div class="callout callout-forest"><b>Intuition:</b> Setting $m < p$ means no single dominant feature can appear in every tree's top splits. Trees built on the remaining features must find alternative, complementary decision boundaries — this is exactly what keeps $\rho$ low while keeping individual tree accuracy adequate.</div>
+</section>
+
+<!-- ===== 4. ADABOOST ===== -->
+<section class="block" id="adaboost">
+  <div class="method-tag tag-amber">Method · Sequential · Bias reduction via reweighting</div>
+  <h2 class="h-section">AdaBoost — Adaptive Boosting</h2>
+  <p>Freund &amp; Schapire (1997) showed that a sequence of weak classifiers (each only marginally better than random) can be combined into an arbitrarily accurate strong classifier — as long as each one focuses on the examples the previous ones got wrong. This is implemented by maintaining a <em>distribution of weights</em> over the training samples that gets updated after every round.</p>
+
+  <div class="diagram-card">
+    <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10z" fill="#1C1B19"/>
+        </marker>
+      </defs>
+      <!-- Learners -->
+      <circle cx="80"  cy="70" r="36" fill="#B97A22"/>
+      <text x="80"  y="65" text-anchor="middle" fill="#fff" font-family="JetBrains Mono" font-size="12">h₁</text>
+      <text x="80"  y="82" text-anchor="middle" fill="#FDE8C5" font-family="JetBrains Mono" font-size="9">α₁</text>
+      <circle cx="270" cy="70" r="36" fill="#B97A22"/>
+      <text x="270" y="65" text-anchor="middle" fill="#fff" font-family="JetBrains Mono" font-size="12">h₂</text>
+      <text x="270" y="82" text-anchor="middle" fill="#FDE8C5" font-family="JetBrains Mono" font-size="9">α₂</text>
+      <circle cx="460" cy="70" r="36" fill="#B97A22"/>
+      <text x="460" y="65" text-anchor="middle" fill="#fff" font-family="JetBrains Mono" font-size="12">h₃</text>
+      <text x="460" y="82" text-anchor="middle" fill="#FDE8C5" font-family="JetBrains Mono" font-size="9">α₃</text>
+      <circle cx="620" cy="70" r="28" fill="#1C1B19"/>
+      <text x="620" y="66" text-anchor="middle" fill="#F6F4EE" font-family="JetBrains Mono" font-size="11">h_T</text>
+      <text x="620" y="81" text-anchor="middle" fill="#8A857C" font-family="JetBrains Mono" font-size="9">α_T</text>
+      <!-- arrows with "reweight" labels -->
+      <line x1="116" y1="70" x2="234" y2="70" stroke="#1C1B19" stroke-width="1.6" marker-end="url(#arr3)"/>
+      <text x="175" y="60" text-anchor="middle" font-family="Source Serif 4" font-size="11" fill="#5B5751">reweight w</text>
+      <line x1="306" y1="70" x2="424" y2="70" stroke="#1C1B19" stroke-width="1.6" marker-end="url(#arr3)"/>
+      <text x="365" y="60" text-anchor="middle" font-family="Source Serif 4" font-size="11" fill="#5B5751">reweight w</text>
+      <line x1="496" y1="70" x2="590" y2="70" stroke-dasharray="4 4" stroke="#8A857C" stroke-width="1.6" marker-end="url(#arr3)"/>
+      <!-- fan to sum -->
+      <line x1="80"  y1="106" x2="325" y2="158" stroke="#C9C0AA" stroke-width="1.2"/>
+      <line x1="270" y1="106" x2="338" y2="158" stroke="#C9C0AA" stroke-width="1.2"/>
+      <line x1="460" y1="106" x2="362" y2="158" stroke="#C9C0AA" stroke-width="1.2"/>
+      <line x1="620" y1="98"  x2="380" y2="158" stroke="#C9C0AA" stroke-width="1.2"/>
+      <rect x="285" y="158" width="130" height="32" rx="6" fill="#1C1B19"/>
+      <text x="350" y="174" text-anchor="middle" fill="#F6F4EE" font-family="JetBrains Mono" font-size="11">sign(Σ αₜhₜ(x))</text>
+      <line x1="350" y1="190" x2="350" y2="200" stroke="#1C1B19" stroke-width="1.5"/>
+    </svg>
+    <div class="diagram-caption">each αₜ is computed from the weighted error εₜ; misclassified samples get higher weight before the next round</div>
+  </div>
+
+  <h3 class="h-sub">Algorithm (binary classification, $y \in \{-1, +1\}$)</h3>
+  <ol class="algo">
+    <li>Initialize uniform sample weights: $w_i^{(1)} = \dfrac{1}{n}$ for all $i = 1, \dots, n$.</li>
+    <li>For each round $t = 1, \dots, T$:
+      <ul>
+        <li>Train weak learner $h_t : \mathcal{X} \to \{-1,+1\}$ on $D$ using the current weight distribution $\{w_i^{(t)}\}$.</li>
+        <li>Compute weighted misclassification error: $\varepsilon_t = \displaystyle\sum_{i=1}^{n} w_i^{(t)}\,\mathbb{1}(h_t(x_i) \neq y_i)$</li>
+        <li>Compute the model's vote weight: $\alpha_t = \dfrac{1}{2}\ln\!\left(\dfrac{1 - \varepsilon_t}{\varepsilon_t}\right)$</li>
+        <li>Update weights: $\tilde{w}_i^{(t+1)} = w_i^{(t)} \exp\!\left(-\alpha_t\, y_i\, h_t(x_i)\right)$</li>
+        <li>Normalise: $w_i^{(t+1)} = \dfrac{\tilde{w}_i^{(t+1)}}{Z_t}$, where $Z_t = \displaystyle\sum_{i=1}^{n}\tilde{w}_i^{(t+1)}$</li>
+      </ul>
+    </li>
+    <li>Return the strong classifier: $H(x) = \text{sign}\!\left(\displaystyle\sum_{t=1}^{T}\alpha_t\, h_t(x)\right)$</li>
+  </ol>
+
+  <div class="legend amber">
+    <div class="legend-title">Notation</div>
+    <dl>
+      <dt>$n$</dt><dd>number of training samples</dd>
+      <dt>$T$</dt><dd>number of boosting rounds; each round adds one weak learner</dd>
+      <dt>$w_i^{(t)}$</dt><dd>weight of sample $i$ at round $t$ — a positive real number, all weights summing to 1</dd>
+      <dt>$h_t$</dt><dd>the weak learner trained at round $t$, typically a single-level decision tree (decision stump)</dd>
+      <dt>$\varepsilon_t$</dt><dd>weighted error rate of $h_t$; must satisfy $\varepsilon_t < 0.5$ for the algorithm to work</dd>
+      <dt>$\alpha_t$</dt><dd>vote weight for $h_t$; grows large when $\varepsilon_t \to 0$, approaches zero when $\varepsilon_t \to 0.5$</dd>
+      <dt>$y_i$</dt><dd>true label of sample $i$, encoded as $+1$ or $-1$</dd>
+      <dt>$h_t(x_i)$</dt><dd>prediction of $h_t$ on sample $i$, also in $\{-1, +1\}$</dd>
+      <dt>$y_i h_t(x_i)$</dt><dd>product is $+1$ on a correct prediction, $-1$ on a wrong one</dd>
+      <dt>$\tilde{w}_i^{(t+1)}$</dt><dd>unnormalized updated weight: decreases on correctly classified samples ($\times e^{-\alpha_t}$), increases on misclassified ones ($\times e^{+\alpha_t}$)</dd>
+      <dt>$Z_t$</dt><dd>partition function (normalizing constant) that ensures weights sum to 1 after the update</dd>
+      <dt>$H(x)$</dt><dd>final strong classifier: the sign of the weighted vote of all $T$ weak learners</dd>
+      <dt>$\text{sign}(\cdot)$</dt><dd>returns $+1$ if the argument is positive, $-1$ if negative</dd>
+    </dl>
+  </div>
+
+  <h3 class="h-sub">Exponential loss connection</h3>
+  <p>AdaBoost implicitly minimises the exponential loss function by gradient descent on the function space. The training error satisfies:</p>
+  <div class="math-block center">
+    $$\frac{1}{n}\sum_{i=1}^{n}\exp(-y_i\, F_T(x_i)) \;\leq\; \prod_{t=1}^{T} 2\sqrt{\varepsilon_t(1-\varepsilon_t)} \;=\; \prod_{t=1}^{T}\sqrt{1-4\gamma_t^2}$$
+  </div>
+  <div class="legend amber">
+    <div class="legend-title">Notation</div>
+    <dl>
+      <dt>$F_T(x_i)$</dt><dd>the final score $\sum_{t=1}^{T}\alpha_t h_t(x_i)$ before the sign is applied</dd>
+      <dt>$\gamma_t$</dt><dd>edge of learner $t$: $\gamma_t = \tfrac{1}{2} - \varepsilon_t$; the amount by which each weak learner beats random ($\varepsilon_t < 0.5$ means $\gamma_t > 0$)</dd>
+    </dl>
+  </div>
+  <p class="muted">The training error decays exponentially in the number of rounds $T$ as long as every $\gamma_t > \gamma > 0$ — the origin of the name "boosting."</p>
+</section>
+
+<!-- ===== 5. GRADIENT BOOSTING ===== -->
+<section class="block" id="gb">
+  <div class="method-tag tag-amber">Method · Sequential · Gradient descent in function space</div>
+  <h2 class="h-section">Gradient Boosting</h2>
+  <p>Friedman (2001) reframed boosting not as a reweighting procedure but as <em>gradient descent in the space of functions</em>. Each new model is fit to the negative gradient of any differentiable loss function — generalising AdaBoost's exponential loss to squared error, log-loss, quantile loss, and beyond.</p>
+
+  <h3 class="h-sub">Algorithm (GBDT — Gradient-Boosted Decision Trees)</h3>
+  <ol class="algo">
+    <li>Initialise with a constant prediction that minimises total loss:
+      $$F_0(x) = \arg\min_{\gamma}\sum_{i=1}^{n} L(y_i,\,\gamma)$$
+      For MSE loss, $F_0(x) = \bar{y}$ (the training mean). For log-loss, $F_0(x) = \log(\bar{p}/(1-\bar{p}))$.
+    </li>
+    <li>For each iteration $m = 1, \dots, M$:
+      <ul>
+        <li><strong>Compute pseudo-residuals</strong> (the negative gradient of the loss w.r.t. the current prediction):
+          $$r_{im} = -\left[\frac{\partial L(y_i,\, F(x_i))}{\partial F(x_i)}\right]_{F\,=\,F_{m-1}}, \quad i = 1, \dots, n$$</li>
+        <li><strong>Fit a regression tree</strong> $h_m$ to the pseudo-residuals $\{(x_i, r_{im})\}_{i=1}^{n}$; let $\{R_{jm}\}_{j=1}^{J_m}$ be its terminal node (leaf) regions.</li>
+        <li><strong>Find the optimal leaf values</strong> by solving the loss minimisation within each leaf:
+          $$\gamma_{jm} = \arg\min_{\gamma}\sum_{x_i \in R_{jm}} L\!\left(y_i,\; F_{m-1}(x_i) + \gamma\right)$$</li>
+        <li><strong>Update the ensemble:</strong>
+          $$F_m(x) = F_{m-1}(x) + \nu\,\sum_{j=1}^{J_m}\gamma_{jm}\,\mathbb{1}(x \in R_{jm})$$</li>
+      </ul>
+    </li>
+    <li>Return $F_M(x)$ as the final prediction.</li>
+  </ol>
+
+  <div class="legend amber">
+    <div class="legend-title">Notation</div>
+    <dl>
+      <dt>$L(y_i, F(x_i))$</dt><dd>differentiable loss function — common choices: squared error $\tfrac{1}{2}(y_i - F(x_i))^2$, log-loss, Huber, quantile</dd>
+      <dt>$F(x)$</dt><dd>the additive model's prediction for input $x$ at the current stage</dd>
+      <dt>$M$</dt><dd>total number of boosting iterations (trees added)</dd>
+      <dt>$r_{im}$</dt><dd>pseudo-residual for sample $i$ at iteration $m$: the direction (in prediction space) that most reduces the loss</dd>
+      <dt>$h_m$</dt><dd>a shallow regression tree (usually depth 3–8) fit to approximate the pseudo-residuals</dd>
+      <dt>$J_m$</dt><dd>number of terminal leaf nodes in tree $h_m$</dd>
+      <dt>$R_{jm}$</dt><dd>the $j$-th leaf region of tree $m$: the set of input vectors $x$ that tree $m$ routes to its $j$-th leaf</dd>
+      <dt>$\gamma_{jm}$</dt><dd>the optimal constant prediction assigned to leaf $j$ of tree $m$, found by a one-dimensional line search</dd>
+      <dt>$\nu$</dt><dd>learning rate (shrinkage), $0 < \nu \leq 1$; scales down each tree's contribution to prevent overfitting — smaller $\nu$ requires larger $M$</dd>
+      <dt>$F_m(x)$</dt><dd>ensemble prediction after incorporating $m$ trees</dd>
+    </dl>
+  </div>
+
+  <h3 class="h-sub">Common loss functions and their pseudo-residuals</h3>
+  <div class="table-wrap">
+    <table class="compare">
+      <thead><tr><th>Task</th><th>Loss $L(y,F)$</th><th>Pseudo-residual $r_{im}$</th></tr></thead>
+      <tbody>
+        <tr><td class="label">Regression</td><td>$\tfrac{1}{2}(y_i - F)^2$</td><td>$y_i - F_{m-1}(x_i)$ — the ordinary residual</td></tr>
+        <tr><td class="label">Classification</td><td>$\log(1 + e^{-y_i F})$</td><td>$y_i - \sigma(F_{m-1}(x_i))$ where $\sigma$ is the sigmoid</td></tr>
+        <tr><td class="label">Quantile ($\tau$)</td><td>$\tau(y-F)^+ + (1-\tau)(F-y)^+$</td><td>$\tau\,\mathbb{1}(y_i > F) - (1-\tau)\,\mathbb{1}(y_i \leq F)$</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-amber"><b>Key insight:</b> For squared error, the pseudo-residual is literally $y_i - F_{m-1}(x_i)$ — the ordinary residual — so each tree is truly "fitting the leftover error." For other losses, the pseudo-residual is a generalised notion of error that points in the steepest descent direction.</div>
+</section>
+
+<!-- ===== 6. XGBOOST ===== -->
+<section class="block" id="xgboost">
+  <div class="method-tag tag-rose">Method · Sequential · Regularised second-order boosting</div>
+  <h2 class="h-section">XGBoost — Extreme Gradient Boosting</h2>
+  <p>Chen &amp; Guestrin (2016) extended gradient boosting by (a) using a <em>second-order Taylor expansion</em> of the loss to find better leaf values analytically, and (b) adding explicit regularisation terms on tree complexity directly into the objective — not as a post-hoc penalty but baked into every split decision.</p>
+
+  <h3 class="h-sub">Regularised objective at iteration $m$</h3>
+  <p>At each boosting round we want to add a tree $f_m$ that minimises:</p>
+  <div class="math-block center">
+    $$\mathcal{L}^{(m)} = \sum_{i=1}^{n} L\!\left(y_i,\; \hat{y}_i^{(m-1)} + f_m(x_i)\right) + \Omega(f_m)$$
+  </div>
+  <div class="math-block center">
+    $$\text{where} \quad \Omega(f_m) = \gamma\, T + \frac{1}{2}\lambda\sum_{j=1}^{T}w_j^2$$
+  </div>
+
+  <div class="legend rose">
+    <div class="legend-title">Notation</div>
+    <dl>
+      <dt>$\mathcal{L}^{(m)}$</dt><dd>total objective to minimise at boosting round $m$</dd>
+      <dt>$\hat{y}_i^{(m-1)}$</dt><dd>current ensemble's prediction for sample $i$ after $m{-}1$ trees</dd>
+      <dt>$f_m(x_i)$</dt><dd>the new tree being added at iteration $m$, mapping inputs to real-valued leaf scores</dd>
+      <dt>$\Omega(f_m)$</dt><dd>regularisation penalty on the complexity of tree $f_m$</dd>
+      <dt>$T$</dt><dd>number of leaves in tree $f_m$</dd>
+      <dt>$w_j$</dt><dd>the score (output value) of the $j$-th leaf in tree $f_m$</dd>
+      <dt>$\gamma$</dt><dd>minimum loss reduction required to make a split — penalises trees with many leaves</dd>
+      <dt>$\lambda$</dt><dd>L2 regularisation coefficient on leaf scores — shrinks individual leaf values toward zero</dd>
+    </dl>
+  </div>
+
+  <h3 class="h-sub">Second-order Taylor approximation</h3>
+  <p>Expanding $L$ around the current prediction to second order:</p>
+  <div class="math-block center">
+    $$\mathcal{L}^{(m)} \approx \sum_{i=1}^{n}\!\left[g_i\, f_m(x_i) + \frac{1}{2}h_i\, f_m(x_i)^2\right] + \Omega(f_m) + \text{const}$$
+  </div>
+  <div class="legend rose">
+    <div class="legend-title">Notation</div>
+    <dl>
+      <dt>$g_i$</dt><dd>first-order derivative (gradient): $g_i = \partial L(y_i, \hat{y}_i^{(m-1)}) / \partial \hat{y}_i^{(m-1)}$</dd>
+      <dt>$h_i$</dt><dd>second-order derivative (Hessian): $h_i = \partial^2 L(y_i, \hat{y}_i^{(m-1)}) / \partial (\hat{y}_i^{(m-1)})^2$</dd>
+    </dl>
+  </div>
+
+  <h3 class="h-sub">Optimal leaf weights and split gain</h3>
+  <p>Given a fixed tree structure, the optimal weight for leaf $j$ is found analytically:</p>
+  <div class="math-block center">
+    $$w_j^* = -\frac{G_j}{H_j + \lambda} \qquad\text{where}\quad G_j = \sum_{i \in I_j} g_i,\quad H_j = \sum_{i \in I_j} h_i$$
+  </div>
+  <p>The <strong>gain</strong> of splitting a leaf $I$ into left child $I_L$ and right child $I_R$ is:</p>
+  <div class="math-block center">
+    $$\text{Gain} = \frac{1}{2}\!\left[\frac{G_L^2}{H_L + \lambda} + \frac{G_R^2}{H_R + \lambda} - \frac{(G_L + G_R)^2}{H_L + H_R + \lambda}\right] - \gamma$$
+  </div>
+  <div class="legend rose">
+    <div class="legend-title">Notation</div>
+    <dl>
+      <dt>$I_j$</dt><dd>set of sample indices that fall into leaf $j$</dd>
+      <dt>$G_j$</dt><dd>sum of first-order gradients in leaf $j$</dd>
+      <dt>$H_j$</dt><dd>sum of second-order Hessians in leaf $j$</dd>
+      <dt>$w_j^*$</dt><dd>optimal leaf weight: the value that minimises the (regularised) approximate loss over leaf $j$</dd>
+      <dt>$I_L, I_R$</dt><dd>sample sets routed to the left and right child after a candidate split</dd>
+      <dt>$G_L, G_R$</dt><dd>sum of gradients in the left and right child respectively</dd>
+      <dt>$H_L, H_R$</dt><dd>sum of Hessians in the left and right child respectively</dd>
+      <dt>$\text{Gain}$</dt><dd>net loss reduction achieved by this split; a split is made only when Gain $> 0$ (i.e., the reduction outweighs the $\gamma$ penalty)</dd>
+    </dl>
+  </div>
+
+  <div class="callout callout-rose"><b>Why two derivatives?</b> The first-order gradient $g_i$ says "which direction to move." The second-order Hessian $h_i$ says "how confident we should be in that direction." Using both gives a better-calibrated step than plain gradient boosting, which uses only $g_i$ (equivalent to assuming the loss is quadratic everywhere with $h_i = 1$).</div>
+
+  <h3 class="h-sub">XGBoost additional features</h3>
+  <p>Beyond the core second-order objective, XGBoost introduces several engineering and algorithmic advances: column subsampling (like Random Forests, a random fraction of features is sampled per tree or per split), row subsampling (stochastic gradient boosting), and a weighted quantile sketch for approximate split finding on large datasets.</p>
+</section>
+
+<!-- ===== 7. LIGHTGBM ===== -->
+<section class="block" id="lgbm">
+  <div class="method-tag tag-teal">Method · Sequential · Histogram-based, leaf-wise growth</div>
+  <h2 class="h-section">LightGBM</h2>
+  <p>Ke et al. (2017) kept the same second-order regularised objective as XGBoost but redesigned the algorithm to be faster and more memory-efficient on large datasets through two key innovations: <strong>Gradient-based One-Side Sampling (GOSS)</strong> and <strong>Exclusive Feature Bundling (EFB)</strong>, combined with histogram-based split finding and a leaf-wise (best-first) tree growth strategy.</p>
+
+  <h3 class="h-sub">Histogram-based split finding</h3>
+  <p>Instead of iterating over every unique feature value to find the best split (as in classical GBDT), LightGBM bins each continuous feature into $K$ discrete buckets and accumulates gradient statistics per bin:</p>
+  <div class="math-block center">
+    $$G_k = \sum_{i:\, x_{ij} \in \text{bin}_k} g_i \qquad H_k = \sum_{i:\, x_{ij} \in \text{bin}_k} h_i \qquad k = 1, \dots, K$$
+  </div>
+  <p>Splits are then evaluated over $K$ bin boundaries rather than $n$ unique values, reducing split-finding complexity from $O(n)$ to $O(K)$ per feature.</p>
+
+  <div class="legend teal">
+    <div class="legend-title">Notation</div>
+    <dl>
+      <dt>$K$</dt><dd>number of bins per feature — a hyperparameter (typical default: 255); smaller $K$ = faster but coarser splits</dd>
+      <dt>$\text{bin}_k$</dt><dd>the $k$-th interval of binned feature values</dd>
+      <dt>$G_k, H_k$</dt><dd>accumulated gradient and Hessian statistics for all samples whose feature value falls in $\text{bin}_k$</dd>
+    </dl>
+  </div>
+
+  <h3 class="h-sub">GOSS — Gradient-based One-Side Sampling</h3>
+  <p>Training instances with large gradients carry more information about the loss landscape. GOSS keeps all high-gradient samples but randomly drops a fraction of low-gradient ones, compensating with a scaling factor to avoid introducing bias:</p>
+  <ol class="algo">
+    <li>Sort samples by $|g_i|$; keep the top $a \cdot n$ samples with the largest absolute gradients (set $A$).</li>
+    <li>From the remaining $n - a \cdot n$ samples (set $A^c$), randomly draw a subset $B$ of size $b \cdot |A^c|$.</li>
+    <li>When computing gradient statistics for a split on subset $A \cup B$, multiply the gradients of samples in $B$ by the amplification factor $\dfrac{1-a}{b}$ to restore unbiasedness.</li>
+  </ol>
+  <div class="legend teal">
+    <div class="legend-title">Notation</div>
+    <dl>
+      <dt>$a$</dt><dd>top sampling ratio: fraction of instances with the largest gradients retained in full (e.g., $a=0.2$)</dd>
+      <dt>$b$</dt><dd>random sampling ratio: fraction of remaining (low-gradient) instances sampled (e.g., $b=0.1$)</dd>
+      <dt>$A$</dt><dd>set of the $a \cdot n$ samples with the largest $|g_i|$ — always included in split computations</dd>
+      <dt>$B$</dt><dd>random subset of $b \cdot (1-a) \cdot n$ low-gradient samples — included with upscaled gradients</dd>
+      <dt>$\dfrac{1-a}{b}$</dt><dd>amplification factor applied to gradients of samples in $B$; corrects the bias introduced by under-representing low-gradient instances</dd>
+    </dl>
+  </div>
+
+  <h3 class="h-sub">EFB — Exclusive Feature Bundling</h3>
+  <p>Many features in high-dimensional sparse datasets are mutually exclusive — they never both take non-zero values simultaneously for the same sample. EFB bundles such features into a single feature, reducing the effective number of features and saving memory and computation. Finding the optimal bundling is NP-hard, so LightGBM uses a greedy approximation via graph colouring.</p>
+
+  <h3 class="h-sub">Leaf-wise vs. level-wise growth</h3>
+  <p>Most GBDT implementations grow trees level-by-level (all nodes at depth $d$ before splitting any node at depth $d+1$). LightGBM grows leaf-wise: at each step it splits whichever existing leaf has the maximum gain, regardless of depth. Given a fixed number of leaves, this typically produces better loss reduction but can lead to deeper, less balanced trees — controlled by the <code>max_depth</code> and <code>num_leaves</code> hyperparameters.</p>
+
+  <div class="callout callout-forest" style="border-left-color:var(--teal); background:var(--teal-soft); color:#0f3838;"><b>LightGBM vs XGBoost:</b> Both optimise the same regularised second-order objective. LightGBM is generally faster on large datasets (histogram binning + GOSS + EFB) and often converges in fewer trees due to leaf-wise growth. XGBoost can sometimes generalise better on smaller datasets because level-wise growth is a stronger form of regularisation.</div>
+</section>
+
+<!-- ===== 8. STACKING ===== -->
+<section class="block" id="stacking">
+  <div class="method-tag tag-slate">Method · Parallel base + learned combiner</div>
+  <h2 class="h-section">Stacking — Stacked Generalization</h2>
+  <p>Wolpert (1992) observed that averaging or majority-voting treats all base models equally, ignoring the fact that different models may be better in different input regions. Stacking trains a <em>meta-learner</em> to optimally blend base models' predictions, learning from the data which models to trust and when.</p>
+
+  <div class="diagram-card">
+    <svg viewBox="0 0 700 230" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10z" fill="#1C1B19"/>
+        </marker>
+      </defs>
+      <!-- Level 0: Training data -->
+      <rect x="270" y="4" width="160" height="32" rx="6" fill="#5B5751"/>
+      <text x="350" y="24" text-anchor="middle" fill="#F6F4EE" font-family="JetBrains Mono" font-size="11">Training data D</text>
+      <!-- fan to level 0 models -->
+      <line x1="300" y1="36" x2="100" y2="80" stroke="#C9C0AA" stroke-width="1.3"/>
+      <line x1="340" y1="36" x2="280" y2="80" stroke="#C9C0AA" stroke-width="1.3"/>
+      <line x1="360" y1="36" x2="440" y2="80" stroke="#C9C0AA" stroke-width="1.3"/>
+      <line x1="400" y1="36" x2="610" y2="80" stroke="#C9C0AA" stroke-width="1.3"/>
+      <!-- Level-0 base models -->
+      <rect x="30"  y="80" width="140" height="36" rx="6" fill="#1F4B3F"/>
+      <text x="100" y="102" text-anchor="middle" fill="#fff" font-family="JetBrains Mono" font-size="11">h₁  (tree)</text>
+      <rect x="210" y="80" width="140" height="36" rx="6" fill="#B97A22"/>
+      <text x="280" y="102" text-anchor="middle" fill="#fff" font-family="JetBrains Mono" font-size="11">h₂  (SVM)</text>
+      <rect x="390" y="80" width="140" height="36" rx="6" fill="#314A60"/>
+      <text x="460" y="102" text-anchor="middle" fill="#fff" font-family="JetBrains Mono" font-size="11">h₃  (k-NN)</text>
+      <rect x="550" y="80" width="120" height="36" rx="6" fill="#7B3553"/>
+      <text x="610" y="102" text-anchor="middle" fill="#fff" font-family="JetBrains Mono" font-size="11">h₄  (net)</text>
+      <!-- OOF arrows -->
+      <line x1="100" y1="116" x2="305" y2="150" stroke="#C9C0AA" stroke-width="1.2" stroke-dasharray="4 3"/>
+      <line x1="280" y1="116" x2="330" y2="150" stroke="#C9C0AA" stroke-width="1.2" stroke-dasharray="4 3"/>
+      <line x1="460" y1="116" x2="370" y2="150" stroke="#C9C0AA" stroke-width="1.2" stroke-dasharray="4 3"/>
+      <line x1="610" y1="116" x2="400" y2="150" stroke="#C9C0AA" stroke-width="1.2" stroke-dasharray="4 3"/>
+      <!-- OOF label -->
+      <text x="200" y="144" font-family="Source Serif 4" font-size="11" fill="#8A857C" font-style="italic">out-of-fold predictions</text>
+      <!-- Meta-learner -->
+      <rect x="255" y="150" width="190" height="44" rx="6" fill="#1C1B19"/>
+      <text x="350" y="169" text-anchor="middle" fill="#F6F4EE" font-family="JetBrains Mono" font-size="12">meta-learner  g</text>
+      <text x="350" y="185" text-anchor="middle" fill="#8A857C" font-family="JetBrains Mono" font-size="9">input:  z = (z⁽¹⁾, z⁽²⁾, z⁽³⁾, z⁽⁴⁾)</text>
+      <!-- Final output -->
+      <line x1="350" y1="194" x2="350" y2="220" stroke="#1C1B19" stroke-width="1.6" marker-end="url(#arr4)"/>
+      <text x="420" y="218" font-family="JetBrains Mono" font-size="11" fill="#1C1B19">ŷ = g(z)</text>
+    </svg>
+    <div class="diagram-caption">dashed lines = out-of-fold meta-features (no leakage); solid lines = full-data training at inference time</div>
+  </div>
+
+  <h3 class="h-sub">Algorithm (K-fold stacking)</h3>
+  <ol class="algo">
+    <li>Partition the training set $D$ into $K$ non-overlapping folds $D_1, \dots, D_K$.</li>
+    <li>For each base learner $l = 1, \dots, L$ and each fold $k = 1, \dots, K$:
+      <ul>
+        <li>Train $h_l$ on $D \setminus D_k$ (all folds except fold $k$).</li>
+        <li>Predict on hold-out fold $D_k$: record $z_i^{(l)} = h_l^{(-k)}(x_i)$ for each $i \in D_k$.</li>
+      </ul>
+    </li>
+    <li>After all $K$ folds, every sample $i$ has an out-of-fold prediction $z_i^{(l)}$ from every base learner $l$.</li>
+    <li>Construct meta-dataset: rows are samples $i$, columns are $z_i^{(1)}, \dots, z_i^{(L)}$ (and optionally the original features $x_i$).</li>
+    <li>Train the meta-learner $g$ on the meta-dataset against the true labels $y_i$.</li>
+    <li>For deployment: retrain each $h_l$ on the full $D$, then predict on a new test point $x^*$ as:
+      $$\hat{y}^* = g\!\left(h_1(x^*), h_2(x^*), \dots, h_L(x^*)\right)$$
+    </li>
+  </ol>
+
+  <div class="legend slate">
+    <div class="legend-title">Notation</div>
+    <dl>
+      <dt>$K$</dt><dd>number of cross-validation folds; typical values: 5 or 10</dd>
+      <dt>$L$</dt><dd>number of level-0 (base) learners</dd>
+      <dt>$h_l^{(-k)}$</dt><dd>learner $l$ trained on all folds except the $k$-th; the superscript $(-k)$ means "trained without fold $k$"</dd>
+      <dt>$z_i^{(l)}$</dt><dd>out-of-fold prediction for sample $i$ from base learner $l$ — this is the $l$-th meta-feature for sample $i$</dd>
+      <dt>$\mathbf{z}_i$</dt><dd>vector $(z_i^{(1)}, \dots, z_i^{(L)})$: the full set of meta-features for sample $i$</dd>
+      <dt>$g$</dt><dd>meta-learner trained on meta-features; often logistic regression, ridge regression, or a shallow tree</dd>
+      <dt>$\hat{y}^*$</dt><dd>the final stacking prediction for a new test point $x^*$</dd>
+    </dl>
+  </div>
+
+  <h3 class="h-sub">Why out-of-fold matters</h3>
+  <p>If base learner $h_l$ is trained on the full data including sample $i$, its prediction on $i$ contains "leaked" memorisation of $i$'s label. The meta-learner would learn to trust overfit predictions, producing a system that looks excellent on training data but fails to generalise. Out-of-fold predictions guarantee that $z_i^{(l)}$ is always computed by a model that has <em>never seen</em> sample $i$ during training.</p>
+
+  <div class="callout callout-slate"><b>Multi-layer stacking:</b> Nothing prevents the meta-learner $g$ from being itself a stacking ensemble. In practice, more than two layers rarely improves performance and significantly increases the risk of overfitting; two-layer stacking is the standard.</div>
+</section>
+
+<!-- ===== 9. VOTING ===== -->
+<section class="block" id="voting">
+  <div class="method-tag tag-forest">Method · Parallel · Fixed combination rule</div>
+  <h2 class="h-section">Voting Classifiers</h2>
+  <p>Voting is the most transparent ensemble strategy: train heterogeneous models independently on the same data and combine their predictions with a predetermined rule — no second model, no learned weights. It is a strong baseline whenever quick results are needed.</p>
+
+  <div class="diagram-card">
+    <svg viewBox="0 0 700 180" xmlns="http://www.w3.org/2000/svg">
+      <!-- Models -->
+      <rect x="30"  y="20" width="150" height="40" rx="7" fill="#1F4B3F"/>
+      <text x="105" y="44" text-anchor="middle" fill="#fff" font-family="JetBrains Mono" font-size="11.5">h₁  (Random Forest)</text>
+      <rect x="270" y="20" width="150" height="40" rx="7" fill="#B97A22"/>
+      <text x="345" y="44" text-anchor="middle" fill="#fff" font-family="JetBrains Mono" font-size="11.5">h₂  (Logistic Reg.)</text>
+      <rect x="510" y="20" width="150" height="40" rx="7" fill="#314A60"/>
+      <text x="585" y="44" text-anchor="middle" fill="#fff" font-family="JetBrains Mono" font-size="11.5">h₃  (SVM)</text>
+      <!-- Down lines -->
+      <line x1="105" y1="60" x2="200" y2="110" stroke="#C9C0AA" stroke-width="1.3"/>
+      <line x1="345" y1="60" x2="345" y2="110" stroke="#C9C0AA" stroke-width="1.3"/>
+      <line x1="585" y1="60" x2="490" y2="110" stroke="#C9C0AA" stroke-width="1.3"/>
+      <!-- Prediction boxes (hard) -->
+      <rect x="150" y="110" width="90" height="28" rx="5" fill="#fff" stroke="#1F4B3F" stroke-width="1.4"/>
+      <text x="195" y="128" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#1F4B3F">Class A</text>
+      <rect x="300" y="110" width="90" height="28" rx="5" fill="#fff" stroke="#B97A22" stroke-width="1.4"/>
+      <text x="345" y="128" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#B97A22">Class B</text>
+      <rect x="450" y="110" width="90" height="28" rx="5" fill="#fff" stroke="#314A60" stroke-width="1.4"/>
+      <text x="495" y="128" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#314A60">Class A</text>
+      <!-- fan to result -->
+      <line x1="195" y1="138" x2="325" y2="160" stroke="#C9C0AA" stroke-width="1.2"/>
+      <line x1="345" y1="138" x2="345" y2="160" stroke="#C9C0AA" stroke-width="1.2"/>
+      <line x1="495" y1="138" x2="365" y2="160" stroke="#C9C0AA" stroke-width="1.2"/>
+      <rect x="275" y="160" width="140" height="20" rx="4" fill="#1C1B19"/>
+      <text x="345" y="174" text-anchor="middle" fill="#F6F4EE" font-family="JetBrains Mono" font-size="11">→ Class A (2 vs 1)</text>
+    </svg>
+    <div class="diagram-caption">hard voting: two votes for Class A, one for Class B → final answer is Class A</div>
+  </div>
+
+  <h3 class="h-sub">Hard voting</h3>
+  <p>Each classifier contributes exactly one vote for its predicted class label. The plurality winner is chosen:</p>
+  <div class="math-block center">
+    $$\hat{y}_{\text{hard}} = \arg\max_{k \in \mathcal{Y}}\;\sum_{l=1}^{L}\mathbb{1}(h_l(x) = k)$$
+  </div>
+
+  <h3 class="h-sub">Soft voting (weighted average of probabilities)</h3>
+  <p>Each classifier outputs a probability vector over all classes. Those probability vectors are averaged (possibly with per-model importance weights) and the class with the highest average probability wins:</p>
+  <div class="math-block center">
+    $$\hat{y}_{\text{soft}} = \arg\max_{k \in \mathcal{Y}}\;\sum_{l=1}^{L} w_l\, p_l(k \mid x) \qquad \text{subject to}\quad \sum_{l=1}^{L} w_l = 1,\quad w_l \geq 0$$
+  </div>
+
+  <div class="legend">
+    <div class="legend-title">Notation</div>
+    <dl>
+      <dt>$L$</dt><dd>number of classifiers being combined</dd>
+      <dt>$\mathcal{Y}$</dt><dd>set of all possible class labels</dd>
+      <dt>$k$</dt><dd>a candidate class label</dd>
+      <dt>$h_l(x)$</dt><dd>the hard class label predicted by classifier $l$ for input $x$</dd>
+      <dt>$p_l(k \mid x)$</dt><dd>estimated probability that classifier $l$ assigns to class $k$ — requires the classifier to output calibrated probabilities</dd>
+      <dt>$w_l$</dt><dd>importance weight for classifier $l$; with equal weighting $w_l = 1/L$ for every $l$</dd>
+    </dl>
+  </div>
+
+  <h3 class="h-sub">Weighted majority vote (for regression)</h3>
+  <p>For regression, the voting analogue is a weighted average:</p>
+  <div class="math-block center">
+    $$\hat{y} = \sum_{l=1}^{L} w_l\, h_l(x) \qquad \text{with}\quad \sum_{l=1}^{L} w_l = 1$$
+  </div>
+  <p class="muted">Soft voting consistently outperforms hard voting when the probability estimates are well calibrated, because it retains confidence information — a near-certain prediction from one model is treated more seriously than a barely-marginal prediction from another.</p>
+</section>
+
+<!-- ===== 10. COMPARISON TABLE ===== -->
+<section class="block" id="compare">
+  <div class="method-tag tag-slate">Summary</div>
+  <h2 class="h-section">All methods side by side</h2>
+  <div class="table-wrap">
+    <table class="compare">
+      <thead>
+        <tr>
+          <th>Method</th>
+          <th>Training order</th>
+          <th>Combination rule</th>
+          <th>Primary effect</th>
+          <th>Source of diversity</th>
+          <th>Key hyperparameters</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="label">Bagging</td>
+          <td>Parallel</td>
+          <td>Average / majority vote</td>
+          <td>Lowers variance</td>
+          <td>Bootstrap resampling</td>
+          <td>$B$ (number of models)</td>
+        </tr>
+        <tr>
+          <td class="label">Random Forest</td>
+          <td>Parallel</td>
+          <td>Average / majority vote</td>
+          <td>Lowers variance strongly</td>
+          <td>Bootstrap + feature subsampling $m$</td>
+          <td>$B$, $m$, max depth</td>
+        </tr>
+        <tr>
+          <td class="label">AdaBoost</td>
+          <td>Sequential</td>
+          <td>Weighted vote $\sum\alpha_t h_t$</td>
+          <td>Lowers bias (and variance)</td>
+          <td>Sample reweighting; each $h_t$ focuses on past mistakes</td>
+          <td>$T$, weak learner complexity</td>
+        </tr>
+        <tr>
+          <td class="label">Gradient Boosting</td>
+          <td>Sequential</td>
+          <td>Additive $\sum\nu\gamma_m h_m$</td>
+          <td>Lowers bias via residual fitting</td>
+          <td>Pseudo-residuals steer each new tree</td>
+          <td>$M$, $\nu$, max depth, $J$</td>
+        </tr>
+        <tr>
+          <td class="label">XGBoost</td>
+          <td>Sequential</td>
+          <td>Additive with regularised $w_j^*$</td>
+          <td>Lowers bias; second-order updates</td>
+          <td>Residuals + column/row subsampling</td>
+          <td>$M$, $\nu$, $\lambda$, $\gamma$, max depth</td>
+        </tr>
+        <tr>
+          <td class="label">LightGBM</td>
+          <td>Sequential</td>
+          <td>Additive (leaf-wise trees)</td>
+          <td>Same as XGBoost, faster at scale</td>
+          <td>GOSS + EFB + histogram binning</td>
+          <td>num_leaves, $K$, $a$, $b$, $\nu$</td>
+        </tr>
+        <tr>
+          <td class="label">Stacking</td>
+          <td>Parallel base; sequential meta</td>
+          <td>Learned $g(\mathbf{z})$</td>
+          <td>Lowers both bias and variance</td>
+          <td>Heterogeneous model architectures</td>
+          <td>$K$ folds, choice of $g$, base models</td>
+        </tr>
+        <tr>
+          <td class="label">Voting</td>
+          <td>Parallel</td>
+          <td>Majority / weighted average</td>
+          <td>Modest variance reduction</td>
+          <td>Diverse algorithms / hyperparameters</td>
+          <td>Weights $w_l$, choice of models</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="h-sub">Unified view: bias-variance perspective</h3>
+  <div class="math-block center">
+    $$\underbrace{\text{Bagging, RF, Voting}}_{\rho \downarrow,\; \sigma^2 \text{ unchanged}} \qquad \underbrace{\text{AdaBoost, GB, XGBoost, LightGBM}}_{\text{Bias}^2 \downarrow,\; \text{Var may } \uparrow \text{ without reg.}} \qquad \underbrace{\text{Stacking}}_{\text{both } \downarrow}$$
+  </div>
+  <p class="muted">In every method, the underlying goal is the same: reduce total expected error. Parallel methods primarily attack the variance term by making models diverse ($\rho$ small). Sequential boosting methods primarily attack the bias term by building towards the correct answer step by step. Stacking does both by learning which base model is best in each region of the input space.</p>
+</section>
+
+</div>
+</main>
+
+<footer>
+  <div class="wrap">Ensemble Learning complete guide — Bagging · Random Forests · AdaBoost · Gradient Boosting · XGBoost · LightGBM · Stacking · Voting · with full mathematical notation</div>
+</footer>
+
+<script>
+  window.addEventListener("load", function () {
+    if (typeof renderMathInElement === "function") {
+      renderMathInElement(document.body, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "$",  right: "$",  display: false }
+        ],
+        throwOnError: false
+      });
+    }
+  });
+</script>
+</body>
+</html>
